@@ -1,0 +1,26 @@
+#!/bin/bash
+
+PY3_PATH=$(which python3)
+if [ "$PY3_PATH" == "" ]; then
+    echo "nbssh requires Python 3 but could not locate it on your system."
+    exit 1
+fi
+
+# Credit to https://stackoverflow.com/a/246128 for this line below
+SCRIPT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
+
+CMD=$(python3 "$SCRIPT_PATH"/nbssh.py $@ 2>&1)
+if [ $? != 0 ] || [[ "$CMD" == *"usage:"* ]]; then
+    if [[ "$CMD" == *"ModuleNotFoundError"* ]]; then
+        echo "Seems like you have not installed the nbssh requirements yet."
+        echo "Install them with the following commands:"
+        echo "  cd $SCRIPT_PATH"
+        echo "  pip3 install --user -r requirements.txt"
+        exit -1
+    fi
+    echo "$CMD"
+    exit 1
+fi
+
+echo ">> $CMD"
+$CMD
