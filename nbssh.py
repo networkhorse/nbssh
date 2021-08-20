@@ -8,7 +8,7 @@ CONFIG = None
 try:
     with open(os.path.expanduser("~/.nbssh/config.json"), "r") as config:
         CONFIG = json.loads(config.read())
-catch:
+except:
     print("Failed to read config from ~/.nbssh/config.json. Likely missing or invalid.")
     sys.exit(2)
 
