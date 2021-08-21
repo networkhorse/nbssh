@@ -95,6 +95,10 @@ if not device:
     print("Device not found.")
     sys.exit(1)
 
+if not device["primary_ip"]:
+    print("Device does not have a primary IP defined.")
+    sys.exit(1)
+
 ip_address = device["primary_ip"]["address"].split("/")[0]
 if CONFIG["force_ipv4"]:
     ip_address = device["primary_ip4"]["address"].split("/")[0]
