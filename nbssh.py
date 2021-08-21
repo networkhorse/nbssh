@@ -61,7 +61,18 @@ BEARER_TOKEN = INSTANCE["token"]
 def get_device_by_name(name):
     url = f"{URL}/api/dcim/devices/?name={name}"
     response = requests.get(url, headers={"Authorization": f"Token {BEARER_TOKEN}"})
-    return response.json()
+    data = response.json()
+    if data["count"] == 0:
+        return None
+    return data["results"][0]
+
+def get_vm_by_name(name):
+    url = f"{URL}/api/virtualization/virtual-machines/?name={name}"
+    response = requests.get(url, headers={"Authorization": f"Token {BEARER_TOKEN}"})
+    data = response.json()
+    if data["count"] == 0:
+        return None
+    return data["results"][0]
 
 user_at_device = args.user_at_device.split("@")
 user = INSTANCE["default_user"]
@@ -77,13 +88,15 @@ else:
     sys.exit(1)
 
 device = get_device_by_name(device_name)
+if not device:
+    device = get_vm_by_name(device_name)
 
-if device["count"] == 0:
+if not device:
     print("Device not found.")
     sys.exit(1)
 
-ip_address = device["results"][0]["primary_ip"]["address"].split("/")[0]
+ip_address = device["primary_ip"]["address"].split("/")[0]
 if CONFIG["force_ipv4"]:
-    ip_address = device["results"][0]["primary_ip4"]["address"].split("/")[0]
+    ip_address = device["primary_ip4"]["address"].split("/")[0]
 
 print(f"ssh {user}@{ip_address}")
