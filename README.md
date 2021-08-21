@@ -32,7 +32,7 @@ nbssh uses a configuration file located in `~/.nbssh/config.json` to define your
             "token": "abcdefgiwantyou2peerwithcompany2"
         },
         "company2": {
-            "default_user": "root", 
+            "default_user": "root",
             "url": "https://netbox.example.com",
             "token": "abcdefgiwantyou2peerwithme"
         }
